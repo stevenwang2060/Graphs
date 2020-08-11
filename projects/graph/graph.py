@@ -49,9 +49,10 @@ class Graph:
 
             # dequeue the first item.
             v = q.dequeue()
-            
+
             # If it's not been visited,
             if v not in visited:
+                print(v)
 
                 # mark as visited.
                 visited.add(v)
@@ -60,8 +61,9 @@ class Graph:
                 for next_vert in self.get_neighbors(v):
                     q.enqueue(next_vert)
 
-        for x in visited:
+        """for x in visited:
             print(x)
+        """
 
     def dft(self, starting_vertex):
         """
@@ -143,9 +145,11 @@ class Graph:
 
                 # Else, we create new paths with each neighbor of the last vertex and enqueue them to be searched.
                 else:
+                    visited.add(last_vertex)
                     for x in self.get_neighbors(last_vertex):
-                        q.enqueue(path + [x])
-                visited.add(last_vertex)
+                        new_path = list(path)
+                        new_path.append(x)
+                        q.enqueue(new_path)
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -178,9 +182,11 @@ class Graph:
 
                 # Else, we create new paths with each neighbor of the last vertex and enqueue them to be searched.
                 else:
+                    visited.add(last_vertex)
                     for x in self.vertices[last_vertex]:
-                        s.push(path + [x])
-                visited.add(last_vertex)
+                        new_path = list(path)
+                        new_path.append(x)
+                        s.push(new_path)
 
     def dfs_recursive(self, starting_vertex, destination_vertex, path = None, visited = None):
         """

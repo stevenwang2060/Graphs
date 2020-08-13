@@ -1,6 +1,21 @@
+import random
+
 class User:
     def __init__(self, name):
         self.name = name
+
+class Queue():
+    def __init__(self):
+        self.queue = []
+    def enqueue(self, value):
+        self.queue.append(value)
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
+        else:
+            return None
+    def size(self):
+        return len(self.queue)
 
 class SocialGraph:
     def __init__(self):
@@ -24,7 +39,7 @@ class SocialGraph:
         """
         Create a new user with a sequential integer ID
         """
-        self.last_id += 1  # automatically increment the ID to assign the new user
+        self.last_id += 1  # Automatically increment the ID to assign the new user.
         self.users[self.last_id] = User(name)
         self.friendships[self.last_id] = set()
 
@@ -44,9 +59,37 @@ class SocialGraph:
         self.friendships = {}
         # !!!! IMPLEMENT ME
 
-        # Add users
+        # Add users, then loop through the range from 0 to the num of users.
+        for i in range(0, num_users):
+            self.add_user(f"User{i}")
 
-        # Create friendships
+        # Create friendships, generate all possible friendship combinations, and records the list.
+        possible_friends = []
+
+        # Avoid duplicates by ensuring first num < second num, loop through users.
+        for user_id in self.users:
+
+            # For each user ID, this ensures that the lowest num is always the first value in tuple.
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                
+                # Append the next user to the possible friends.
+                possible_friends.append((user_id, friend_id))
+        
+        # Shuffle the possible friendships.
+        random.shuffle(possible_friends)
+
+        # Create friendships for the n num of pairs of the list.
+        n = num_users * avg_friendships // 2
+
+        # Loop through the range of n.
+        for i in range(n):
+
+            # Grab a possible friendship from the list.
+            friendship = possible_friends[i]
+            user_id, friend_id = friendship
+
+            # Pass the user id and friend_id to add_friendship().
+            self.add_friendship(user_id, friend_id)
 
     def get_all_social_paths(self, user_id):
         """
@@ -57,8 +100,45 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        visited = {}  # Note that this is a dictionary, not a set
+
+        # Create an empty queue and enqueue PATH to the starting vertex ID.
+        q = Queue()
+        q.enqueue([user_id])
+
+        visited = {}  # Note that this is a dictionary, not a set.
         # !!!! IMPLEMENT ME
+
+        # While the queue is not empty,
+        while q.size() > 0:
+
+            # dequeue the first PATH (value).
+            value = q.dequeue()
+
+            # Grab the last key from the path.
+            key = value[-1]
+
+            # Check if the key has not been visited.
+            if key not in visited:
+
+                # Mark it as visited
+                print(self.friendships[key])
+                visited[key] = list(self.friendships[key])
+
+                # Then add a PATH (value) to its neighbors to the back of the queue.
+
+                # print("friendships", self.friendships)
+                # print("value", value)
+                # print("visited", visited)
+
+                # Need to add the value of the key's neighbors.
+                for friend in visited[key]:
+
+                    # Make a copy of the path.
+                    value_copy = list(value)
+
+                    # Append the neighbor to the back of the path.
+                    value_copy.append(friend)
+                    q.enqueue(value_copy)
         return visited
 
 

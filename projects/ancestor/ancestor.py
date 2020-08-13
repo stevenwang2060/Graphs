@@ -13,6 +13,8 @@ def earliest_ancestor(ancestors, starting_node):
 
     curr = starting_node
 
+    print(graph)
+    
     # If the input individual is not in the graph, it has no parents.
     if curr not in graph:
         return -1
